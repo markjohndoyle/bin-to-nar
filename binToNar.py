@@ -1,4 +1,4 @@
-from click.decorators import group
+# -*- coding: utf-8 -*-
 
 __author__ = 'markj'
 
@@ -65,7 +65,7 @@ def enterCommandLine(libpath, includepath, pompath, groupid, artifactid, version
         if install:
             installNar(pom, lib)
 
-    click.secho("We're done!", bold=True, fg="gr")
+    click.secho("We're done!", bold=True, fg="green")
 
 
 def printPlan(aol, lib, pom, install, outdir):
