@@ -1,5 +1,3 @@
-from turtledemo.penrose import dart
-
 __author__ = 'markj'
 
 import xml.etree.ElementTree as ET
