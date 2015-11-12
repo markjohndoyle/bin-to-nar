@@ -29,9 +29,10 @@ class LinuxLib:
             # verbose output stuff
             pass
 
-    def stripExtension(self,libPath):
-        '''
-        This could be a pain on Linux as there are no real extension standards. A library could be
-        libx.so or libx.so.10.1.2
-        '''
-        self.libName = os.path.splitext(libPath)[0]
+    def stripExtension(self, libPath):
+        soExtIndex = libPath.rfind(nar.LINUX_LIB_EXTENSION)
+        if soExtIndex != -1:
+            self.libName = self.libPath[:soExtIndex + len(nar.LINUX_LIB_EXTENSION)]
+        else:
+            self.libName = libPath
+        self.libName = os.path.splitext(self.libName)[0]
