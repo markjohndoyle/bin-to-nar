@@ -1,3 +1,4 @@
 .idea
 __pycache__
 binary_to_nar.egg-info
+*.pyc
