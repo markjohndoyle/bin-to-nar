@@ -3,6 +3,7 @@
 __author__ = 'markj'
 
 from subprocess import call
+import platform
 from os import makedirs
 from os import path
 import shutil
@@ -151,47 +152,51 @@ def createJar(fileName, files, outdir):
 
 def installNar(pom, lib, aol, outdir):
     narInstallCmd = [
-                    "mvn", "org.apache.maven.plugins:maven-install-plugin:2.5.2::install-file",
-                    "\"-Dfile=" + path.join(outdir, lib.createNarFileName()) + "\"",
-                    "\"-Dtype=nar" + "\"",
-                    "\"-DgroupId=" + pom.groupId  + "\"",
-                    "\"-DartifactId=" + pom.artifactId  + "\"",
-                    "\"-Dversion=" + pom.version + "\"",
-                    "\"-Dpackaging=nar\"",
-                    "\"-DgeneratePom=false\""
-                    ]
+        "mvn",
+        "\"org.apache.maven.plugins:maven-install-plugin:2.5.2::install-file\"",
+        "\"-Dfile=" + path.join(outdir, lib.createNarFileName()) + "\"",
+        "\"-Dtype=nar" + "\"",
+        "\"-DgroupId=" + pom.groupId  + "\"",
+        "\"-DartifactId=" + pom.artifactId  + "\"",
+        "\"-Dversion=" + pom.version + "\"",
+        "\"-Dpackaging=nar\"",
+        "\"-DgeneratePom=false\""
+    ]
     noarchInstallCmd = [
-                    "mvn", "org.apache.maven.plugins:maven-install-plugin:2.5.2::install-file",
-                    "\"-Dfile=" + path.join(outdir, lib.createNarNoArchFileName()) + "\"",
-                    #"\"-DgroupId=" + pom.groupId  + "\"",
-                    #"\"-DartifactId=" + pom.artifactId  + "\"",
-                    #"\"-Dversion=" + pom.version + "\"",
-                    "\"-Dpackaging=nar\"",
-                    "\"-DgeneratePom=false\"",
-                    "\"-Dclassifier=" + nar.NAR_NOARCH_QUALIFIER  + "\"",
-                    "\"-DpomFile=" + pom.path + "\""
-                    ]
+        "mvn", "org.apache.maven.plugins:maven-install-plugin:2.5.2::install-file",
+        "\"-Dfile=" + path.join(outdir, lib.createNarNoArchFileName()) + "\"",
+        #"\"-DgroupId=" + pom.groupId  + "\"",
+        #"\"-DartifactId=" + pom.artifactId  + "\"",
+        #"\"-Dversion=" + pom.version + "\"",
+        "\"-Dpackaging=nar\"",
+        "\"-DgeneratePom=false\"",
+        "\"-Dclassifier=" + nar.NAR_NOARCH_QUALIFIER  + "\"",
+        "\"-DpomFile=" + pom.path + "\""
+    ]
     libInstallCmd = [
-                    "mvn", "org.apache.maven.plugins:maven-install-plugin:2.5.2::install-file",
-                    "\"-Dfile=" + path.join(outdir, lib.createNarSharedLibFileName(aol)) + "\"",
-                    "\"-Dpackaging=nar\"",
-                    "\"-DgeneratePom=false\"",
-                    "\"-Dclassifier=" + aol + "-" + lib.type + "\"",
-                    "\"-DpomFile=" + pom.path + "\""
-                    ]
+        "mvn", "org.apache.maven.plugins:maven-install-plugin:2.5.2::install-file",
+        "\"-Dfile=" + path.join(outdir, lib.createNarSharedLibFileName(aol)) + "\"",
+        "\"-Dpackaging=nar\"",
+        "\"-DgeneratePom=false\"",
+        "\"-Dclassifier=" + aol + "-" + lib.type + "\"",
+        "\"-DpomFile=" + pom.path + "\""
+    ]
 
     click.secho("Installing NAR file.", fg="green")
     click.secho(" ".join(narInstallCmd), fg="cyan")
-    retcode = call(narInstallCmd, shell=True, cwd=outdir)
-    if retcode != 0:
-        raise click.ClickException("Error installing NAR file")
+    call(narInstallCmd, shell=isShellRequired())
+
+    click.secho("Installing noarch NAR file.", fg="green")
+    click.secho(" ".join(noarchInstallCmd), fg="cyan")
+    call(noarchInstallCmd, shell=isShellRequired())
+
+    click.secho("Installing lib NAR file.", fg="green")
+    click.secho(" ".join(libInstallCmd), fg="cyan")
+    call(libInstallCmd, shell=isShellRequired())
+
+
+def isShellRequired():
+    if platform.system() == "Windows":
+        return True
     else:
-        click.secho("Installing noarch NAR file.", fg="green")
-        click.secho(" ".join(noarchInstallCmd), fg="cyan")
-        retcode = call(noarchInstallCmd, shell=True, cwd=outdir)
-        if retcode != 0:
-            raise click.ClickException("Error installing NAR file")
-        else:
-            click.secho(" ".join(libInstallCmd), fg="cyan")
-            click.secho("Installing lib NAR file.", fg="green")
-            call(libInstallCmd, shell=True, cwd=outdir)
+        return False
