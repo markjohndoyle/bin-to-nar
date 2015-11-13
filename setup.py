@@ -6,7 +6,6 @@ setup(
     name="binary to nar",
     version="0.0.1-SNAPSHOT",
     packages={"binToNar"},
-    #py_modules=['binToNar'],
     install_requires=[
         "Click",
         "colorama"
