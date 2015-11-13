@@ -4,13 +4,15 @@ import xml.etree.ElementTree as ET
 import click
 import shutil
 import narGlobals as nar
-
+from os import path
 
 class Pom:
     ns = {"mvn": "http://maven.apache.org/POM/4.0.0"}
 
-    def __init__(self, pompath, groupid, artifactid, version):
-        self.path = "./" + artifactid + "-" + version + nar.POM_EXTENSION
+    def __init__(self, pompath, groupid, artifactid, version, outdir):
+        #self.fileName = artifactid + "-" + version + nar.POM_EXTENSION
+        self.fileName = "pom" + nar.POM_EXTENSION
+        self.path = path.join(outdir, self.fileName)
         shutil.copy(pompath, self.path)
         self.project = ET.parse(pompath).getroot()
         self.parsePom(groupid, artifactid, version)

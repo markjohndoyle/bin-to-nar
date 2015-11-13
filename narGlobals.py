@@ -5,7 +5,7 @@ LIB_TYPES = ["shared", "static"]
 OS_TYPES = ["Windows", "Linux", "MacOSX", "SunOS", "FreeBSD"]
 LINKER_TYPES = ["msvc", "g++", "gcc", "icc", "icpc", "ecc", "ecpc", "CC"]
 
-POM_EXTENSION = ".pom"
+POM_EXTENSION = ".xml"
 
 NAR_PACKAGING = "nar"
 NAR_EXTENSION = ".nar"
