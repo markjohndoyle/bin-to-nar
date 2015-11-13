@@ -41,7 +41,7 @@ def enterCommandLine(libpath, includepath, pompath, groupid, artifactid, version
 
     """
     click.secho("-----------------------", bold=True, fg="green")
-    click.secho("Binary to NAR generator", bold=True, fg="green")
+    click.secho("Binary to NAR generator - dev2", bold=True, fg="green")
     click.secho("-----------------------", bold=True, fg="green")
 
     global verbosity
@@ -154,7 +154,10 @@ def installNar(pom, lib, aol, outdir):
                     "mvn", "org.apache.maven.plugins:maven-install-plugin:2.5.2::install-file",
                     "\"-Dfile=" + path.join(outdir, lib.createNarFileName()) + "\"",
                     "\"-Dtype=nar" + "\"",
-                    "\"-DpomFile=" + pom.path + "\"",
+                    "\"-DgroupId=" + pom.groupId  + "\"",
+                    "\"-DartifactId=" + pom.artifactId  + "\"",
+                    "\"-Dversion=" + pom.version + "\"",
+                    "\"-Dpackaging=nar\"",
                     "\"-DgeneratePom=false\""
                     ]
     noarchInstallCmd = [
@@ -176,6 +179,7 @@ def installNar(pom, lib, aol, outdir):
                     "\"-Dclassifier=" + aol + "-" + lib.type + "\"",
                     "\"-DpomFile=" + pom.path + "\""
                     ]
+
     click.secho("Installing NAR file.", fg="green")
     click.secho(" ".join(narInstallCmd), fg="cyan")
     retcode = call(narInstallCmd, shell=True, cwd=outdir)
