@@ -2,17 +2,17 @@
 
 __author__ = 'markj'
 
-import click
 from subprocess import call
 from os import makedirs
 from os import path
-from os import listdir
-
-import narGlobals as nar
-from linuxLib import LinuxLib
-from windowsLib import WindowsLib
-from pom import Pom
 import shutil
+
+import click
+
+from binToNar import narGlobals as nar
+from binToNar.linuxLib import LinuxLib
+from binToNar.windowsLib import WindowsLib
+from binToNar.pom import Pom
 
 verbosity = 0
 

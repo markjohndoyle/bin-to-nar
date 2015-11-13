@@ -1,10 +1,13 @@
 __author__ = 'markj'
 
 import xml.etree.ElementTree as ET
-import click
 import shutil
-import narGlobals as nar
 from os import path
+
+import click
+
+from binToNar import narGlobals as nar
+
 
 class Pom:
     ns = {"mvn": "http://maven.apache.org/POM/4.0.0"}

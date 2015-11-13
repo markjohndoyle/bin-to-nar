@@ -1,7 +1,9 @@
 __author__ = 'markj'
 
-import narGlobals as nar
 import os.path
+
+from binToNar import narGlobals as nar
+
 
 class LinuxLib:
 
