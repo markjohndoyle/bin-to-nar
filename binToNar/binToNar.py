@@ -43,7 +43,7 @@ def enterCommandLine(libpath, includepath, pompath, groupid, artifactid, version
 
     """
     click.secho("-----------------------", bold=True, fg="green")
-    click.secho("Binary to NAR generator - dev2", bold=True, fg="green")
+    click.secho("Binary to NAR generator", bold=True, fg="green")
     click.secho("-----------------------", bold=True, fg="green")
 
     global verbosity
@@ -155,7 +155,7 @@ def installNar(pom, lib, aol, outdir):
     narInstallCmd = [
         "mvn",
         "\"org.apache.maven.plugins:maven-install-plugin:2.5.2::install-file\"",
-        "\"-Dfile=" + path.join(outdir, lib.createNarFileName()) + "\"",
+        "\"-Dfile=" + lib.createNarFileName() + "\"",
         "\"-Dtype=nar" + "\"",
         "\"-DgroupId=" + pom.groupId  + "\"",
         "\"-DartifactId=" + pom.artifactId  + "\"",
@@ -165,7 +165,7 @@ def installNar(pom, lib, aol, outdir):
     ]
     noarchInstallCmd = [
         "mvn", "org.apache.maven.plugins:maven-install-plugin:2.5.2::install-file",
-        "\"-Dfile=" + path.join(outdir, lib.createNarNoArchFileName()) + "\"",
+        "\"-Dfile=" + lib.createNarNoArchFileName() + "\"",
         #"\"-DgroupId=" + pom.groupId  + "\"",
         #"\"-DartifactId=" + pom.artifactId  + "\"",
         #"\"-Dversion=" + pom.version + "\"",
@@ -176,7 +176,7 @@ def installNar(pom, lib, aol, outdir):
     ]
     libInstallCmd = [
         "mvn", "org.apache.maven.plugins:maven-install-plugin:2.5.2::install-file",
-        "\"-Dfile=" + path.join(outdir, lib.createNarSharedLibFileName(aol)) + "\"",
+        "\"-Dfile=" + lib.createNarSharedLibFileName(aol) + "\"",
         "\"-Dpackaging=nar\"",
         "\"-DgeneratePom=false\"",
         "\"-Dclassifier=" + aol + "-" + lib.type + "\"",
