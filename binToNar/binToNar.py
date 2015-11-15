@@ -112,7 +112,7 @@ def createNar(lib, aol, groupId, artifactId, arch, operatingSystem, linker, outd
     propertiesPath = path.join(outdir, "META-INF", "nar", groupId, artifactId)
     makedirs(propertiesPath)
 
-    narProps = open(path.join(outdir, propertiesPath, "nar.properties"), 'w')
+    narProps = open(path.join(propertiesPath, "nar.properties"), 'w')
 
     narProps.write("output=" + lib.libName + "-" + lib.version + "\n")
     narProps.write("nar.noarch=" + groupId + "\:" + artifactId + "\:nar\:noarch\n")
