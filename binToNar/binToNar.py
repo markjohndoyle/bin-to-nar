@@ -32,9 +32,10 @@ verbosity = 0
 @click.option("-ln", "--linker", type=click.Choice(nar.LINKER_TYPES), help="The linker the library was built with.", prompt=True)
 @click.option("-t", "--type", type=click.Choice(nar.LIB_TYPES), help="The type of library.", prompt=True)
 @click.option("-in", "--install", default=False, is_flag=True, help="Whether to install the resultant NARs into the local maven repo.")
+@click.option("--ext", help="If your library has a non-standard filename extension you can provide it here.")
 @click.option("-v", "--verbose", count=True, help="Verbosity of the utility. Accepts one or to repeats for two levels of output, e.g. -v or -vv")
 @click.argument("outdir", type=click.Path(exists=True))
-def enterCommandLine(libpath, includepath, pompath, groupid, artifactid, version, architecture, os, linker, type, install, verbose, outdir):
+def enterCommandLine(libpath, includepath, pompath, groupid, artifactid, version, architecture, os, linker, type, install, ext, verbose, outdir):
     """
     Wraps an existing native library in a NAR package for use with the nar plugin in the maven build system.
 
@@ -51,9 +52,9 @@ def enterCommandLine(libpath, includepath, pompath, groupid, artifactid, version
     aol = createAol(architecture, os, linker)
 
     if os == "Linux":
-        lib = LinuxLib(libpath, version, type)
+        lib = LinuxLib(libpath, version, type, ext)
     else:
-        lib = WindowsLib(libpath, version, type)
+        lib = WindowsLib(libpath, version, type, ext)
 
     pom = Pom(pompath, groupid, artifactid, version, outdir)
 
@@ -184,18 +185,21 @@ def installNar(pom, lib, aol, outdir):
 
     click.secho("Installing NAR file.", fg="green")
     click.secho(" ".join(narInstallCmd), fg="cyan")
-    call(narInstallCmd, shell=isShellRequired())
+    call(narInstallCmd, shell=isShellRequired(), cwd=outdir)
 
     click.secho("Installing noarch NAR file.", fg="green")
     click.secho(" ".join(noarchInstallCmd), fg="cyan")
-    call(noarchInstallCmd, shell=isShellRequired())
+    call(noarchInstallCmd, shell=isShellRequired(), cwd=outdir)
 
     click.secho("Installing lib NAR file.", fg="green")
     click.secho(" ".join(libInstallCmd), fg="cyan")
-    call(libInstallCmd, shell=isShellRequired())
+    call(libInstallCmd, shell=isShellRequired(), cwd=outdir)
 
 
 def isShellRequired():
+    """
+    :return: True if the shell is required to execute Maven
+    """
     if platform.system() == "Windows":
         return True
     else:

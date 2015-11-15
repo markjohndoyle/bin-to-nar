@@ -7,7 +7,7 @@ from binToNar import narGlobals as nar
 
 class WindowsLib:
 
-    def __init__(self, libPath, version, type):
+    def __init__(self, libPath, version, type, ext):
         super().__init__()
         self.libPath = libPath
         self.stripExtension(libPath)

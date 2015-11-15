@@ -7,11 +7,16 @@ from binToNar import narGlobals as nar
 
 class LinuxLib:
 
-    def __init__(self, libPath, version, type):
+    def __init__(self, libPath, version, type, ext):
         super().__init__()
+        if ext == None:
+            self.ext = "." + nar.LINUX_LIB_EXTENSION
+        else:
+            self.ext = "." + ext
         self.libPath = libPath
-        self.stripExtension(libPath)
-        self.libName = os.path.basename(self.libName)
+        self.libName = os.path.basename(self.libPath)
+        self.stripExtension()
+        self.stripPrefix()
         self.version = version
         self.type = type
 
@@ -31,10 +36,8 @@ class LinuxLib:
             # verbose output stuff
             pass
 
-    def stripExtension(self, libPath):
-        soExtIndex = libPath.rfind(nar.LINUX_LIB_EXTENSION)
+    def stripExtension(self):
+        soExtIndex = self.libName.rfind(self.ext)
         if soExtIndex != -1:
-            self.libName = self.libPath[:soExtIndex + len(nar.LINUX_LIB_EXTENSION)]
-        else:
-            self.libName = libPath
-        self.libName = os.path.splitext(self.libName)[0]
+            self.libName = self.libName[:soExtIndex + len(self.ext)]
+            self.libName = os.path.splitext(self.libName)[0]
