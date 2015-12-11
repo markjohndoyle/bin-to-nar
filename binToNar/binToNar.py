@@ -32,10 +32,11 @@ verbosity = 0
 @click.option("-ln", "--linker", type=click.Choice(nar.LINKER_TYPES), help="The linker the library was built with.", prompt=True)
 @click.option("-t", "--type", type=click.Choice(nar.LIB_TYPES), help="The type of library.", prompt=True)
 @click.option("-in", "--install", default=False, is_flag=True, help="Whether to install the resultant NARs into the local maven repo.")
+@click.option("-d", "--deploy", nargs=2, help="Whether to deploy the resultant NARs into a given repo. Requires the repo URL and the server id")
 @click.option("--ext", help="If your library has a non-standard filename extension you can provide it here.")
 @click.option("-v", "--verbose", count=True, help="Verbosity of the utility. Accepts one or to repeats for two levels of output, e.g. -v or -vv")
 @click.argument("outdir", type=click.Path(exists=True))
-def enterCommandLine(libpath, includepath, pompath, groupid, artifactid, version, architecture, os, linker, type, install, ext, verbose, outdir):
+def enterCommandLine(libpath, includepath, pompath, groupid, artifactid, version, architecture, os, linker, type, install, deploy, ext, verbose, outdir):
     """
     Wraps an existing native library in a NAR package for use with the nar plugin in the maven build system.
 
@@ -67,11 +68,13 @@ def enterCommandLine(libpath, includepath, pompath, groupid, artifactid, version
         createLibNar(lib, aol, outdir)
         if install:
             installNar(pom, lib, aol, outdir)
+        if deploy:
+            deployNar(pom, lib, aol, outdir, deploy[0], deploy[1])
 
     click.secho("We're done!", bold=True, fg="green")
 
 
-def printPlan(aol, lib, pom, install, outdir):
+def printPlan(aol, lib, pom, install, deploy, outdir):
     click.secho("Library details:", bold=True)
     click.secho("  ├── Name is " + lib.libName)
     click.secho("  ├── Type is " + lib.type)
@@ -166,9 +169,6 @@ def installNar(pom, lib, aol, outdir):
     noarchInstallCmd = [
         "mvn", "org.apache.maven.plugins:maven-install-plugin:2.5.2::install-file",
         "\"-Dfile=" + lib.createNarNoArchFileName() + "\"",
-        #"\"-DgroupId=" + pom.groupId  + "\"",
-        #"\"-DartifactId=" + pom.artifactId  + "\"",
-        #"\"-Dversion=" + pom.version + "\"",
         "\"-Dpackaging=nar\"",
         "\"-DgeneratePom=false\"",
         "\"-Dclassifier=" + nar.NAR_NOARCH_QUALIFIER  + "\"",
@@ -194,6 +194,56 @@ def installNar(pom, lib, aol, outdir):
     click.secho("Installing lib NAR file.", fg="green")
     click.secho(" ".join(libInstallCmd), fg="cyan")
     call(libInstallCmd, shell=isShellRequired(), cwd=outdir)
+
+
+def deployNar(pom, lib, aol, outdir, repoUrl, serverId):
+    narDeployCmd = [
+        "mvn",
+        "\"org.apache.maven.plugins:maven-deploy-plugin:2.8.2:deploy-file\"",
+        "\"-Dfile=" + lib.createNarFileName() + "\"",
+        "\"-Dtype=nar" + "\"",
+        "\"-DgroupId=" + pom.groupId  + "\"",
+        "\"-DartifactId=" + pom.artifactId  + "\"",
+        "\"-Dversion=" + pom.version + "\"",
+        "\"-Dpackaging=nar\"",
+        "\"-DgeneratePom=false\"",
+        "\"-DrepositoryId=" + repoUrl + "\"",
+        "\"-Durl=" + serverId + "\""
+    ]
+    noarchDeployCmd = [
+        "mvn",
+        "\"org.apache.maven.plugins:maven-deploy-plugin:2.8.2:deploy-file\"",
+        "\"-Dfile=" + lib.createNarNoArchFileName() + "\"",
+        "\"-Dpackaging=nar\"",
+        "\"-DgeneratePom=false\"",
+        "\"-Dclassifier=" + nar.NAR_NOARCH_QUALIFIER  + "\"",
+        "\"-DpomFile=" + pom.path + "\"",
+        "\"-DrepositoryId=" + repoUrl + "\"",
+        "\"-Durl=" + serverId + "\""
+    ]
+    libDeployCmd = [
+        "mvn",
+        "\"org.apache.maven.plugins:maven-deploy-plugin:2.8.2:deploy-file\"",
+        "\"-Dfile=" + lib.createNarSharedLibFileName(aol) + "\"",
+        "\"-Dpackaging=nar\"",
+        "\"-DgeneratePom=false\"",
+        "\"-Dclassifier=" + aol + "-" + lib.type + "\"",
+        "\"-DpomFile=" + pom.path + "\"",
+        "\"-DrepositoryId=" + repoUrl + "\"",
+        "\"-Durl=" + serverId + "\""
+    ]
+
+    click.secho("Deploying NAR file.", fg="green")
+    click.secho(" ".join(narDeployCmd), fg="cyan")
+    call(narDeployCmd, shell=isShellRequired(), cwd=outdir)
+
+    click.secho("Deploying noarch NAR file.", fg="green")
+    click.secho(" ".join(noarchDeployCmd), fg="cyan")
+    call(noarchDeployCmd, shell=isShellRequired(), cwd=outdir)
+
+    click.secho("Deploying lib NAR file.", fg="green")
+    click.secho(" ".join(libDeployCmd), fg="cyan")
+    call(libDeployCmd, shell=isShellRequired(), cwd=outdir)
 
 
 def isShellRequired():
