@@ -59,7 +59,7 @@ def enterCommandLine(libpath, includepath, pompath, groupid, artifactid, version
 
     pom = Pom(pompath, groupid, artifactid, version, outdir)
 
-    printPlan(aol, lib, pom, install, outdir)
+    printPlan(aol, lib, pom, install, deploy, outdir)
 
     if click.confirm("\nShall we get on with it?", default=True):
         click.secho("Ok, sit back and relax!")
