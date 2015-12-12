@@ -207,8 +207,8 @@ def deployNar(pom, lib, aol, outdir, repoUrl, serverId):
         "\"-Dversion=" + pom.version + "\"",
         "\"-Dpackaging=nar\"",
         "\"-DgeneratePom=false\"",
-        "\"-DrepositoryId=" + repoUrl + "\"",
-        "\"-Durl=" + serverId + "\""
+        "\"-DrepositoryId=" + serverId + "\"",
+        "\"-Durl=" + repoUrl + "\""
     ]
     noarchDeployCmd = [
         "mvn",
@@ -218,8 +218,8 @@ def deployNar(pom, lib, aol, outdir, repoUrl, serverId):
         "\"-DgeneratePom=false\"",
         "\"-Dclassifier=" + nar.NAR_NOARCH_QUALIFIER  + "\"",
         "\"-DpomFile=" + pom.path + "\"",
-        "\"-DrepositoryId=" + repoUrl + "\"",
-        "\"-Durl=" + serverId + "\""
+        "\"-DrepositoryId=" + serverId + "\"",
+        "\"-Durl=" + repoUrl + "\""
     ]
     libDeployCmd = [
         "mvn",
@@ -229,8 +229,8 @@ def deployNar(pom, lib, aol, outdir, repoUrl, serverId):
         "\"-DgeneratePom=false\"",
         "\"-Dclassifier=" + aol + "-" + lib.type + "\"",
         "\"-DpomFile=" + pom.path + "\"",
-        "\"-DrepositoryId=" + repoUrl + "\"",
-        "\"-Durl=" + serverId + "\""
+        "\"-DrepositoryId=" + serverId + "\"",
+        "\"-Durl=" + repoUrl + "\""
     ]
 
     click.secho("Deploying NAR file.", fg="green")
