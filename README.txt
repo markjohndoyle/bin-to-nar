@@ -1,23 +1,26 @@
-Bin-to-nar tool packages and installs existing libraries as NAR artefacts.
+# Bin-to-nar tool packages and installs existing libraries as NAR artefacts.
 
-== Prerequisites ==
+## Prerequisites
 Python3 compiled with enabled openSsl module
 Python setuptools
 Apache Maven: https://maven.apache.org/
 
-== Build ==
-./setup.py build
+## Build 
+``` ./setup.py build ```
 
-== Installation ==
-./setup.py install
+## Installation
+``` ./setup.py install ```
 
-== More setup options ==
+## More setup options
+```
 usage: setup.py [global_opts] cmd1 [cmd1_opts] [cmd2 [cmd2_opts] ...]
-   or: setup.py --help [cmd1 cmd2 ...]
-   or: setup.py --help-commands
-   or: setup.py cmd --help
+or: setup.py --help [cmd1 cmd2 ...]
+or: setup.py --help-commands
+or: setup.py cmd --help
+```
 
-== Usage ==
+# Usage
+```
 binToNar --help
 Usage: binToNar [OPTIONS] OUTDIR
 
@@ -56,10 +59,10 @@ Options:
                                   repeats for two levels of output, e.g. -v or
                                   -vv
   --help                          Show this message and exit.
-
-== Example ==
+```
+## Example
 Consider the following source project structure:
-
+```
 my_project|--lib
           |     |--my_shared_object.so
           |--include
@@ -68,7 +71,7 @@ my_project|--lib
           |
           |--maven
                   |--my_project_pom.xml
-
+```
 
 To build nar artifacts locally in output directory target:
 
@@ -81,18 +84,21 @@ target
 To build nar artifacts and install to local maven repository:
 
 cd my_project
-binToNar -l lib/my_shared_object.so -i include -p maven/my_project_pom.xml -g
-my_company.my_project -a my_artifact -vr my_version -o Linux -ln g++ -t shared
--in target
 
+```
+binToNar -l lib/my_shared_object.so -i include -p maven/my_project_pom.xml -g
+my_company.my_project -a my_artifact -vr my_version -o Linux -ln g++ -t shared -in target
+```
 
 To build nar artifacts and deploy to external server(e.g. Nexus):
 
 cd my_project
+
+```
 binToNar -l lib/my_shared_object.so -i include -p maven/my_project_pom.xml -g
 my_company.my_project -a my_artifact -vr my_version -o Linux -ln g++ -t shared
 -d https://my_server/my_repository my_server_id target
+```
 
 Note: Access to external server needs to be configured in Apache Maven
 configuration (settings.xml)
- 
