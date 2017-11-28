@@ -76,10 +76,11 @@ my_project|--lib
 To build nar artifacts locally in output directory target:
 
 cd my_project
+```
 binToNar -l lib/my_shared_object.so -i include -p maven/my_project_pom.xml -g
 my_company.my_project -a my_artifact -vr my_version -o Linux -ln g++ -t shared
 target
-
+```
 
 To build nar artifacts and install to local maven repository:
 
